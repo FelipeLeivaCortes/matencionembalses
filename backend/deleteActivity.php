@@ -35,6 +35,8 @@
         $result1	=	query($LINK, $data, true);
 
         if($result1 == 1){
+            backupDeletedFiles("Activity", $_POST["id"], $_SESSION['name']." ".$_SESSION['lastname']);
+
             $DATA["ERROR"] 		= false;
             $DATA["MESSAGE"]	= "Se ha eliminado la actividad exitosamente";
 

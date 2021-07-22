@@ -59,9 +59,6 @@
             }
         }
 
-
-
-
         /**
          * Getting the event´s document
          */
@@ -93,6 +90,17 @@
 								)
 		);
 		$result3	=	query($LINK, $data, true);
+
+        /**
+         * Triggering the function that send the mensual report
+         */
+
+        $DATA["reports"]    = array();
+        if(date("d") == "19"){
+            $LINK               =   new mysqli($URL, $USERNAME, $PASSWORD, $ADMINISTRATION);
+            $DATA["reports"]    = sendReport($ID_COMPANY, $LINK);
+        }
+
 
         $DATA["records"]        = $result1;
         $DATA["events"]         = $result2;

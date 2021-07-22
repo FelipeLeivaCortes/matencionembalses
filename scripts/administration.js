@@ -1,17 +1,34 @@
 let table;
+let addUserId       = "addUname";
+let searchUserId    = "searchUname";
 
 function initAdministration(){
     
     $('#bttnCloseUpdateUser').click(function(){
         $('#SearchResultsForm').modal('toggle');
     });
+    
+    document.getElementById(addUserId).addEventListener("change", (e)=>{
+        e.preventDefault();
         
-//The arguments are: function, id
-    EventToPressEnter("searchUser", "searchUname");
-    EventToChangeInput("newRut('addUname')", "addUname");
-    EventToChangeInput("newRut('searchUname')", "searchUname");
+        let value       = e.target.value.split("-");
+        let isFormated  = value.length > 0 ? true : false;
+        
+        rut = new Rut(e.target.value, isFormated);
+        if(!rut.isValid(addUserId)){delete rut; return};
+    });
 
+    document.getElementById(searchUserId).addEventListener("change", (e)=>{
+        e.preventDefault();
+        
+        let value       = e.target.value.split("-");
+        let isFormated  = value.length > 0 ? true : false;
+        
+        rut = new Rut(e.target.value, isFormated);
+        if(!rut.isValid(searchUserId)){delete rut; return};
 
+        EventToPressEnter("searchUser", "searchUname");
+    });
 
     GetUsers();
     
@@ -70,7 +87,7 @@ async function AddUser(){
     $("#AddUserForm").modal("toggle");
 
     let rut         = new Rut(
-        document.getElementById("addUname").value,
+        document.getElementById(addUserId).value,
         true
     );
 
@@ -136,7 +153,7 @@ async function AddUser(){
 }
 
 function searchUser(Action){
-    document.getElementById("searchUname").value    = "";
+    document.getElementById(searchUserId).value    = "";
 
     sessionStorage.setItem('SearchUser', Action);
     $('#searchUserForm').modal('show');

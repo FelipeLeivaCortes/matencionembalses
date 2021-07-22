@@ -17,8 +17,7 @@ li{
 }
 
 thead{
-    background: rgb(185,25,223);
-    background: linear-gradient(90deg, rgba(185,25,223,1) 17%, rgba(191,41,228,1) 28%, rgba(0,212,255,1) 91%);
+    background: #007bff;
 }
 
 .table-reponsive-xl{

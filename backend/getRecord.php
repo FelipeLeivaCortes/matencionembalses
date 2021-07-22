@@ -132,6 +132,8 @@
                      $DATA["ERRNO"]	= 50;
                      $DATA["MESSAGE"]	= "El registro ".$idRecord." tenía asociadas actividades inexistentes, por lo tanto, ha sido eliminado del sistema";
 
+                     backupDeletedFiles("Record", $idRecord, "Sistema");
+
                   }else{
                      $DATA["ERRNO"]	= 51;
                      $DATA["MESSAGE"]	= "El registro ".$idRecord." tiene asociadas actividades inexistentes, y no se pudo eliminar. Comuníquese con el administrador";

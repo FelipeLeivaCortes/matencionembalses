@@ -450,15 +450,14 @@ function getDocumentEvent(){
         contentType:    false,
         processData:    false,
         error:          (error)=>{console.log(error);},
-        success:        (response)=>{ console.log(response);
+        success:        (response)=>{
             setTimeout(()=>{
                 CloseSpinner();
-
-                let idFather    = "body-container";
+                let idFather    = "myContainer";
                 let idTable     = "myTable";
-                
+
                 try{
-                    document.getElementById("container:" + idTable).remove();
+                    document.getElementById(idFather).remove();
                 }catch(e){
                     console.log("No se puede eliminar un elemento inexistente");
                 }
@@ -467,6 +466,10 @@ function getDocumentEvent(){
                     ModalReportEvent("Error", response.ERRNO, response.MESSAGE);
                 
                 }else{
+                    let div     = document.createElement("div");
+                    div.setAttribute("id", idFather);
+                    document.getElementById("body-container").appendChild(div);
+
                     let types   = ["Text","Link","Text","Text","Text", "Cell"];
                     let header  = {
                         0:  {   name:   "N°",

@@ -40,23 +40,14 @@
 
             while( $QUERY->fetch() ){
                 $arrayThread    = array();
-                $arraySplited   = array();
-                $index          = 0;
-
                 $fileContent    = fopen($PATH_FILES.$ID_COMPANY.'/threads/thread_'.$idReport.'.txt', 'r');  
                 
-                while( !feof($fileContent) ){
-                    $arraySplited[$index] = fgets($fileContent);
-                    $index++;
-                }
-
-                for( $i=0; $i<$index; $i++ ){
-                    $arrayContent   = explode(":", $arraySplited[$i]);
-
+                while(!feof($fileContent)){
+                    $line   = explode(":", fgets($fileContent));
                     array_push($arrayThread, [
-                        'type'      => $arrayContent[0],
-                        'author'    => $arrayContent[1],
-                        'content'   => $arrayContent[2],
+                        'type'      => $line[0],
+                        'author'    => $line[1],
+                        'content'   => $line[2],
                     ]);
                 }
 

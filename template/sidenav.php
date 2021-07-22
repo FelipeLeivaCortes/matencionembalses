@@ -42,17 +42,7 @@
                     <p>Otros</p>
                 </div>
                 
-                <div>
-                    <a href="javascript:loadConfiguration();"><span class="icon-cog icon-space"></span>Configuración</a>
-                </div>
-                
-                <div>
-                    <a href="javascript:loadContacts();"><span class="icon-spreadsheet icon-space"></span>Memoranda</a>
-                </div>
-
-                <div>
-                <a href="javascript:loadManuals();"><span class="icon-document icon-space"></span>Manuales</a>
-                </div>
+                <div id="commonContainer"></div>
             </div>
 
             <!-- sidebar-footer  -->

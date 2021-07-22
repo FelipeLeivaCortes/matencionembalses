@@ -61,6 +61,8 @@
                 $QUERY  ->  bind_param('i', $idRecord);
                 $QUERY  ->  execute();
 
+                backupDeletedFiles("Record", $idRecord, $_SESSION['name']." ".$_SESSION['lastname']);
+
                 $DATA["ERROR"] 		= false;
                 $DATA["MESSAGE"]	= "Se ha eliminado el registro exitosamente";
         

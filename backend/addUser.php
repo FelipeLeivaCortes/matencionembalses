@@ -2,7 +2,6 @@
 	session_start();
 
     include "configuration.php";
-	include "sendMail.php";
 	
 	if( empty($LINK) ){
         $DATA["ERROR"]      = true;

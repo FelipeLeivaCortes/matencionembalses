@@ -3,38 +3,45 @@
  * */
 
  var dayUpdate       = 15;
- var monthUpdate     = "07";
+ var monthUpdate     = "21";
  var yearUpdate      = "2021";
- var version         = "1.6";
+ var version         = "1.7";
 
 
 /* By default, the base.js will load the home´s content */
 window.addEventListener("load", function(){
-   ConfigureSystem();
+    var idCompany	= sessionStorage.getItem("ID_COMPANY");
+    var path        = "img/logoCompany" + idCompany + ".png"; 
+    document.getElementById("logoCompany").setAttribute("src", path);
 
-   var items 	 	= document.getElementById("AdminContainer").children.length;
+    let isAdmin     = document.getElementById("user-role").innerHTML == "Administrador" ? true : false;
 
-    if( items > 0 ){
-        getNotifications();
-        loadStadistics();
+    switch(isAdmin){
+        case true:
+            getNotifications();
+            createContainer("Estadisticas Generales",
+                            false,
+                            "",
+                            "stadistics.html",
+                            "initStadistics()"
+                            );
+            break;
 
-    }else{
-        loadMaintances();
-
+        case false:
+            createContainer("Mantenciones",
+                            true,
+                            "nav-maintances.html",
+                            "maintances.html",
+                            "initMaintances()"
+                            );
+            break;
     }
 
     setTimeout(()=>{
-        ShowNewFeatures();
+        updateSystem();
     }, 3000);
    
 });
-
-function ConfigureSystem(){
-    var idCompany	= sessionStorage.getItem("ID_COMPANY");
-    var path		    = "img/logoCompany" + idCompany + ".png";
- 
-    document.getElementById("logoCompany").setAttribute("src", path);
- };
 
 function getNotifications(){
     $.ajax({
@@ -46,6 +53,7 @@ function getNotifications(){
         success:        (DATA)=>{
             if(!DATA.ERROR){
                 let numNotifications    = DATA.events.length + DATA.records.length + DATA.outstanding.length + DATA.suggests.length;
+                numNotifications        = DATA.reports.length > 0 ? numNotifications + 1 : numNotifications;
 
                 if(numNotifications > 0){
                     document.getElementById("notificationsIcon").setAttribute("data-target", "#notificationsForm");
@@ -58,6 +66,10 @@ function getNotifications(){
                     document.getElementById("notificationsIcon").appendChild(spanCount);
                     
                     $('#formNotifications').empty();
+
+                    if(DATA.reports != undefined){
+                        console.log(DATA.reports);
+                    }
 
                     /**
                      * Alert to show the events
@@ -141,30 +153,7 @@ function getNotifications(){
     });
 }
 
-function loadStadistics(){
-    document.getElementById("title-page").innerHTML = "Estadisticas Generales";
-
-    var navbar = new XMLHttpRequest();
-    navbar.open('get', 'nav-stadistics.html');
-    navbar.send();
-   // navbar.onload = function(){document.getElementById('navbar-container').innerHTML = navbar.responseText}
-
-    var qr = new XMLHttpRequest();
-    qr.open('get', 'stadistics.html');
-    qr.send();
-    qr.onload = function(){
-        document.getElementById('navbar-container').innerHTML   = "<div></div>";
-        document.getElementById('body-container').innerHTML     = qr.responseText;
-    }
-
-    ShowSpinner();
-
-    setTimeout(function(){
-        initStadistics();
-    }, 1000);
-}
-
-function ShowNewFeatures(){
+function updateSystem(){
     var dateUpdate      = dayUpdate + "/" + monthUpdate + "/" + yearUpdate;
     
     var versionSystem   = " Actualización del sistema: Versión " + version;
@@ -173,8 +162,8 @@ function ShowNewFeatures(){
         "implementado la nueva versión <b>" + version + "</b>, en la cúal destacan las siguientes " +
         "características:"
     
-    var bodyFeature     = "<b>* Optimización:</b> Se ha aplicado optimizaciones al sistema.<br><br>";
-                            "<b>* Mantenciones:</b> Se puede sugerir actividades a las guías de mantenciones respectivas.";
+    var bodyFeature =   "<b>* Optimización:</b> Se ha aplicado optimizaciones al sistema.<br><br>" +
+                        "<b>* Soporte:</b> Desde ahora, cada mes se enviará un reporte con las actividades y guías que hayan sido eliminadas.";
 
     $('#versionSystem').html(versionSystem);
     $('#newFeatureHeader').html(headerFeature);
@@ -188,180 +177,39 @@ function ShowNewFeatures(){
     if( dayDiff > 0 && dayDiff <= 2 ){
         $("#ModalNewFeatures").modal("show");
     }
-
 }
 
-function loadUsers(){
-    document.getElementById("title-page").innerHTML = "Usuarios del sistema";
+/**
+ * @param {string} title : Title of the page 
+ * @param {boolean} includeNavbar : Do you want to include the navbar?
+ * @param {string} navbar : Name of the navbar
+ * @param {string} body : Name of the body page
+ */
+function createContainer(title, includeNavbar, navbarName, bodyName, targetFunction){
+    document.getElementById("title-page").innerHTML = title;
 
-    var navbar = new XMLHttpRequest();
-    navbar.open('get', 'nav-usercontrol.html');
-    navbar.send();
-    navbar.onload = function(){document.getElementById('navbar-container').innerHTML = navbar.responseText}
-
-    var qr = new XMLHttpRequest();
-    qr.open('get', 'userControl.html');
-    qr.send();
-    qr.onload = function(){document.getElementById('body-container').innerHTML = qr.responseText}
-
-    ShowSpinner();
-
-    setTimeout(function(){
-        initAdministration();
-    }, 1000);
-}
-
-function loadActivities(){
-    document.getElementById("title-page").innerHTML = "Actividades";
-
-    var navbar = new XMLHttpRequest();
-    navbar.open('get', 'nav-activities.html');
-    navbar.send();
-    navbar.onload = function(){document.getElementById('navbar-container').innerHTML = navbar.responseText}
-
-    var qr = new XMLHttpRequest();
-    qr.open('get', 'activities.html');
-    qr.send();
-    qr.onload = function(){document.getElementById('body-container').innerHTML = qr.responseText}
-
-    ShowSpinner();
-
-    setTimeout(function(){
-        initActivity();
-    }, 2000);
-    
-}
-
-function loadMaintances(){
-    document.getElementById("title-page").innerHTML = "Mantenciones";
-
-    var navbar = new XMLHttpRequest();
-    navbar.open('get', 'nav-maintances.html');
-    navbar.send();
-    navbar.onload = function(){document.getElementById('navbar-container').innerHTML = navbar.responseText}
-
-    var qr = new XMLHttpRequest();
-    qr.open('get', 'maintances.html');
-    qr.send();
-    qr.onload = function(){document.getElementById('body-container').innerHTML = qr.responseText}
-
-    ShowSpinner();
-    
-    setTimeout(function(){
-        document.getElementById("idRecord").focus();
-        initMaintances();
-    }, 500);
-}
-
-function loadRecords(idRecord){
-    document.getElementById("title-page").innerHTML = "Guías de Mantención";
-
-    var navbar = new XMLHttpRequest();
-    navbar.open('get', 'nav-records.html');
-    navbar.send();
-    navbar.onload = function(){document.getElementById('navbar-container').innerHTML = navbar.responseText}
-
-    var qr = new XMLHttpRequest();
-    qr.open('get', 'records.html');
-    qr.send();
-    qr.onload = function(){document.getElementById('body-container').innerHTML = qr.responseText}
-
-    ShowSpinner();
-
-    setTimeout(() => {
-        initRecords();
-
-        if( idRecord != 0 ){
-            $("#notificationsForm").modal("toggle");
-            getRecord(idRecord, true);
-        }
-    }, 500);
-}
-
-function loadReports(){
-    document.getElementById("title-page").innerHTML = "Reportes";
-
-    var navbar = new XMLHttpRequest();
-    navbar.open('get', 'nav-reports.html');
-    navbar.send();
-    navbar.onload = function(){document.getElementById('navbar-container').innerHTML = navbar.responseText}
-
-    var qr = new XMLHttpRequest();
-    qr.open('get', 'reports.html');
-    qr.send();
-    qr.onload = function(){document.getElementById('body-container').innerHTML = qr.responseText}
-
-    ShowSpinner();
-
-    setTimeout(() => {
-        initReports();
-    }, 500);
-}
-
-function loadConfiguration(){
-    document.getElementById("title-page").innerHTML = "Configuraciones";
-    
-    var qr = new XMLHttpRequest();
-    qr.open('get', 'configuration.html');
-    qr.send();
-    qr.onload = function(){
-        document.getElementById('body-container').innerHTML = qr.responseText;
-        document.getElementById('navbar-container').innerHTML = "<div></div>";
-    }
-
-    ShowSpinner();
-    
-    setTimeout(function(){
-        initConfiguration();
-    }, 500);
-}
-
-function loadContacts(){
-    document.getElementById("title-page").innerHTML = "Memoranda";
-
-    var navbar = new XMLHttpRequest();
-    navbar.open('get', 'nav-contacts.html');
-    navbar.send();
-    navbar.onload = function(){
-        document.getElementById('navbar-container').innerHTML = navbar.responseText
-    }
-
-    var qr = new XMLHttpRequest();
-    qr.open('get', 'contacts.html');
-    qr.send();
-    qr.onload = function(){
-        document.getElementById('body-container').innerHTML = qr.responseText;
-    }
-
-    ShowSpinner();
-    
-    setTimeout(() => {
-        initContacts();
-    }, 1000);
-}
-
-function loadManuals(){
-    var role    = document.getElementById("user-role").innerHTML;
-    document.getElementById("title-page").innerHTML = "Manuales";
-
-    if( role == 'Administrador' ){
+    if(includeNavbar){
         var navbar = new XMLHttpRequest();
-        navbar.open('get', 'nav-manuals.html');
+        navbar.open('get', navbarName);
         navbar.send();
-        navbar.onload = function(){document.getElementById('navbar-container').innerHTML = navbar.responseText};
+        navbar.onload = function(){
+            document.getElementById('navbar-container').innerHTML = navbar.responseText
+        }
 
     }else{
-        document.getElementById('navbar-container').innerHTML = '<div></div>';
+        document.getElementById('navbar-container').innerHTML   = "<div></div>";
     }
 
-    var qr = new XMLHttpRequest();
-    qr.open('get', 'manuals.html');
-    qr.send();
-    qr.onload = function(){document.getElementById('body-container').innerHTML = qr.responseText;};
+    var body = new XMLHttpRequest();
+    body.open('get', bodyName);
+    body.send();
+    body.onload = function(){
+        document.getElementById('body-container').innerHTML     = body.responseText;
+    }
 
     ShowSpinner();
 
-    setTimeout(function(){
-        initManuals();
-    }, 500);
+    setTimeout(()=>{
+        eval(targetFunction);
+    }, (delay * 2));
 }

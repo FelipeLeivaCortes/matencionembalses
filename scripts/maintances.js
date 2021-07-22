@@ -95,6 +95,10 @@ async function getRecord(idRecord){
 
                 $('#searchRecordForm').modal('show');
 
+                setTimeout(()=>{
+                    CloseSpinner();
+                }, delay);
+
                 break;
 
             case "0":
@@ -456,6 +460,7 @@ async function getRecord(idRecord){
                         
                             if(status){
                                 document.getElementById("container:" + idTable).remove();
+                                document.getElementById("containerButtons").remove();
                             }
                         }
                         
@@ -467,35 +472,26 @@ async function getRecord(idRecord){
                     }
                 }
 
+                setTimeout(()=>{
+                    CloseSpinner();
+                }, delay);
+
                 break;
 
             default:
-                ModalReportEvent("Error", 100, "Opción no válida");
+                setTimeout(()=>{
+                    CloseSpinner();
+                    ModalReportEvent("Error", 100, "Opción no válida");
+                }, delay);
+                
                 break;
         }
-
-        setTimeout(()=>{
-            CloseSpinner();
-        }, delay);
     }
 };
 
 function showSuggestActivity(){
     $("#suggestActivityForm").modal("show");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function updatePiezometria(){
     var numPit      = 14;
